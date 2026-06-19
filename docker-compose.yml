@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: qrpay-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - qrpay-network
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: qrpay-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - qrpay-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: qrpay-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/qrpay-pro
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=production_secret_key_access_98765
+      - JWT_REFRESH_SECRET=production_secret_key_refresh_98765
+      - CLIENT_URL=http://localhost:80
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - qrpay-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: qrpay-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - qrpay-network
+
+volumes:
+  mongo-data:
+
+networks:
+  qrpay-network:
+    driver: bridge
