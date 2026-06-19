@@ -180,22 +180,6 @@ export default function LoginView() {
           <span>New to QRPay Pro? </span>
           <Link to="/register" className="text-purple-400 hover:underline">Create an account</Link>
         </div>
-
-        <div className="mt-6 p-4 bg-slate-950/40 border border-slate-800/80 rounded-2xl flex items-center justify-between">
-          <span className="text-xs text-slate-450 font-medium">Demo Access</span>
-          <button
-            type="button"
-            onClick={() => {
-              reset({
-                email: 'admin@gmail.com',
-                password: 'admin@',
-              });
-            }}
-            className="text-xs font-bold text-purple-400 hover:text-purple-300 transition cursor-pointer hover:underline"
-          >
-            Autofill Admin Credentials
-          </button>
-        </div>
       </div>
 
       {/* Forgot Password Modal */}
