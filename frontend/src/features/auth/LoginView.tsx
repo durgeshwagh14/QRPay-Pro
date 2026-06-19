@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { QrCode, Lock, Mail, AlertCircle, Loader2, ShieldAlert, ArrowLeft, X } from 'lucide-react';
 import api from '../../lib/api.js';
@@ -54,22 +54,14 @@ export default function LoginView() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<LoginFields>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: isAdminParam ? 'admin@gmail.com' : '',
-      password: isAdminParam ? 'admin@' : '',
+      email: '',
+      password: '',
     }
   });
-
-  useEffect(() => {
-    reset({
-      email: isAdminParam ? 'admin@gmail.com' : '',
-      password: isAdminParam ? 'admin@' : '',
-    });
-  }, [isAdminParam, reset]);
 
   const onSubmit = async (data: LoginFields) => {
     setIsLoading(true);
