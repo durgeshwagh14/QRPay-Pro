@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { QrCode, Lock, Mail, AlertCircle, Loader2, ShieldAlert, ArrowLeft, X } from 'lucide-react';
 import api from '../../lib/api.js';
@@ -54,6 +54,7 @@ export default function LoginView() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<LoginFields>({
     resolver: zodResolver(loginSchema),
@@ -62,6 +63,13 @@ export default function LoginView() {
       password: isAdminParam ? 'admin@' : '',
     }
   });
+
+  useEffect(() => {
+    reset({
+      email: isAdminParam ? 'admin@gmail.com' : '',
+      password: isAdminParam ? 'admin@' : '',
+    });
+  }, [isAdminParam, reset]);
 
   const onSubmit = async (data: LoginFields) => {
     setIsLoading(true);
@@ -171,6 +179,22 @@ export default function LoginView() {
         <div className="text-center mt-6 text-xs text-slate-400">
           <span>New to QRPay Pro? </span>
           <Link to="/register" className="text-purple-400 hover:underline">Create an account</Link>
+        </div>
+
+        <div className="mt-6 p-4 bg-slate-950/40 border border-slate-800/80 rounded-2xl flex items-center justify-between">
+          <span className="text-xs text-slate-450 font-medium">Demo Access</span>
+          <button
+            type="button"
+            onClick={() => {
+              reset({
+                email: 'admin@gmail.com',
+                password: 'admin@',
+              });
+            }}
+            className="text-xs font-bold text-purple-400 hover:text-purple-300 transition cursor-pointer hover:underline"
+          >
+            Autofill Admin Credentials
+          </button>
         </div>
       </div>
 

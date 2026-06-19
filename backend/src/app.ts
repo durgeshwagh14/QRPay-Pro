@@ -21,16 +21,26 @@ const app = express();
 
 app.use(helmet());
 
-const allowedOrigins = [env.CLIENT_URL];
+const allowedOrigins = [
+  env.CLIENT_URL,
+  'https://qrpay-pro-frontend.onrender.com',
+  'https://qrpay-pro.onrender.com',
+];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, postman, curl)
+      // Allow requests with no origin (mobile apps, Postman, curl)
       if (!origin) return callback(null, true);
-      
-      const isLocalhost = origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
-      if (isLocalhost || allowedOrigins.includes(origin)) {
+
+      const isLocalhost =
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:');
+
+      // Allow any onrender.com subdomain (covers all possible frontend names)
+      const isRender = origin.endsWith('.onrender.com');
+
+      if (isLocalhost || isRender || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
